@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: rtb
+  name: reviews-service-app
+  labels:
+    app: reviews-service-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app : reviews-service-app
+  template:
+    metadata:
+      labels:
+        app: reviews-service-app
+    spec:
+      containers:
+        - name: reviews-service-app
+          image: mamoonroshangar/reviews-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9002
+          env: # Setting Environmental Variables
+            - name: DB_HOST   # Setting Database host address from configMap
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: host
+
+            - name: DB_NAME  # Setting Database name from configMap
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: dbName
+
+            - name: DB_USERNAME  # Setting Database username from Secret
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: username
+
+            - name: DB_PASSWORD # Setting Database password from Secret
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: password
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: reviews-service-svc
+spec:
+  selector:
+    app: reviews-service-app
+  ports:
+    - port: 80
+      targetPort: 9002
