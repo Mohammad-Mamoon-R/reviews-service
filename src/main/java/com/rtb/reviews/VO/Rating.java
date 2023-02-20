@@ -14,4 +14,5 @@ public class Rating {
     private Long reviewerId;
     private Long bookId;
     private int rating;
+
 }
