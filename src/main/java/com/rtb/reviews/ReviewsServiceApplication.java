@@ -13,6 +13,7 @@ public class ReviewsServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ReviewsServiceApplication.class, args);
+		System.out.println("Main method");
 	}
 
 	@Bean
